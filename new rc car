@@ -1,0 +1,16 @@
+import RPi.GPIO as GPIO
+import time
+
+# Setup GPIO
+GPIO.setmode(GPIO.BCM)
+GPIO.setwarnings(False)
+
+# Motor control pins
+in1 = 24
+in2 = 23
+en = 25
+
+# Initialize GPIO pins
+GPIO.setup(in1, GPIO.OUT)
+GPIO.setup(in2, GPIO.OUT)
+GPIO.setup(en, GPIO.OUT)
