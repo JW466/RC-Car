@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Motor Control</title>
+    <!-- Include a CSS framework like Bootstrap for better styling -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <!-- Add a JavaScript function to handle form submission -->
+    <script>
+        function controlMotor(direction, speed) {
+            // Create a new XMLHttpRequest
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", "/motor", true);
+            xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+            // Send the direction and speed as form data
+            xhr.send("direction=" + direction + "&speed=" + speed);
+        }
+
+        function updateSpeed() {
+            // Get the speed value from the slider
+            var speed = document.getElementById("speedSlider").value;
+            // Get the current direction (from selected button)
+            var direction = document.querySelector('input[name="direction"]:checked').value;
+            // Control the motor with the current direction and speed
+            controlMotor(direction, speed);
+        }
+
+        function setDirection(direction) {
+            // Get the current speed from the slider
+            var speed = document.getElementById("speedSlider").value;
+            // Control the motor with the specified direction and current speed
+            controlMotor(direction, speed);
+        }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h1 class="mt-4">Motor Control</h1>
+        <div class="form-group">
+            <!-- Forward and Backward buttons -->
+            <div>
+                <input type="radio" name="direction" id="forward" value="forward" onclick="setDirection('forward')" checked>
+                <label for="forward" class="btn btn-success">Forward</label>
+                <input type="radio" name="direction" id="backward" value="backward" onclick="setDirection('backward')">
+                <label for="backward" class="btn btn-danger">Backward</label>
+            </div>
+        </div>
+        <div class="form-group">
+            <!-- Slider for motor speed -->
+            <label for="speedSlider">Motor Speed:</label>
+            <input type="range" id="speedSlider" min="0" max="100" step="1" value="0" oninput="updateSpeed()">
+            <span id="speedValue">0</span>%
+        </div>
+    </div>
+</body>
+</html>
