@@ -1,0 +1,52 @@
+from flask import Flask, render_template, request
+import RPi.GPIO as GPIO
+import time
+
+# Setup GPIO
+GPIO.setmode(GPIO.BCM)
+GPIO.setwarnings(False)
+
+# Motor control pins
+in1 = 24
+in2 = 23
+en = 25
+
+# Initialize GPIO pins
+GPIO.setup(in1, GPIO.OUT)
+GPIO.setup(in2, GPIO.OUT)
+GPIO.setup(en, GPIO.OUT)
+
+# PWM for speed control
+pwm = GPIO.PWM(en, 1000)  # 1kHz frequency
+pwm.start(0)  # Start with PWM duty cycle of 0 (motor off)
+
+app = Flask(__name__)
+
+@app.route("/")
+def index():
+    return render_template("index.html")
+
+@app.route("/motor", methods=["POST"])
+def control_motor():
+    # Get direction and speed from request
+    direction = request.form.get("direction")
+    speed = int(request.form.get("speed", 0))
+
+    # Set motor direction
+    if direction == "forward":
+        GPIO.output(in1, True)
+        GPIO.output(in2, False)
+    elif direction == "backward":
+        GPIO.output(in1, False)
+        GPIO.output(in2, True)
+
+    # Set motor speed
+    pwm.ChangeDutyCycle(speed)
+
+    return "Motor control updated"
+
+if __name__ == "__main__":
+    try:
+        app.run(host="0.0.0.0", port=5000, debug=True)
+    finally:
+        GPIO.cleanup()
